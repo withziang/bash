@@ -1,0 +1,89 @@
+#!/bin/bash
+
+#the first argument
+
+if [ $# -eq 0 ]
+then 
+	echo "Error: Expecting argument"
+	exit 1
+fi
+
+firstArg=$1
+
+case $firstArg in
+
+#first case
+avg)
+	#check if there is second argument
+	if [ $# -ne 2 ]
+	then 
+		echo "Error: Two arguments needed"
+		exit 2
+	fi
+	country="$2"
+	
+	#start the calculation
+	awk -v country="$country" '
+	BEGIN {FS=","
+       		sum = 0
+		count = 0}
+		{ if ($4 == country){ count++; sum += $8}}
+		END{ if (count != 0 ) print int(sum/count +0.5); else print "count is 0"}
+	' < worldcities.csv
+	
+	;;
+#second case
+total)
+	#check if there is a second argument 
+	if [ $# -ne 2 ] 
+	then
+		echo "Error: Two arguments needed"
+		exit 3
+	fi
+
+	country="$2"
+
+	#start the calculation
+	awk -v country="$country" '
+	BEGIN {FS = ","
+		population = 0}
+	{ if ( $4 == country){ population += $8 }}
+	END { print population }
+	' < worldcities.csv
+	;;
+#third case
+diff)
+	#check if there is another two arguments
+	if [ $# -ne 3 ] 
+	then
+		echo "Error: Three arguments needed"
+		exit 4
+	fi
+
+	city1="$2"
+	city2="$3"
+
+	awk -v city1="$city1" -v city2="$city2" '
+	BEGIN {FS = ","
+		population1 = 0
+		population2 = 0}
+		{ if ($1 == city1) { population1 = $8}
+		  if ($1 == city2) { population2 = $8}}
+	END { print population1- population2 }
+	' < worldcities.csv
+	;;
+
+#else
+*)
+	echo "Invalid Argument: select from <avg> <total> <diff>"
+	exit 1
+	;;
+esac
+
+
+
+
+
+
+
+

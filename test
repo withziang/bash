@@ -1,0 +1,180 @@
+#!/bin/bash
+
+# run the program function
+run() {
+	./minicalc "$@" 2>/dev/null
+}
+
+#exception 1
+res1=$(run)
+EXIT1=$?
+
+if [ $EXIT1 -ne 1 ]
+then
+	echo "failed with exception1"
+	exit 1
+else 	
+	echo "success: Expecting 1; Got $EXIT1"
+fi
+
+#exception2
+res2=$(run otheroperator)
+EXIT2=$?
+
+if [ $EXIT2 -ne 2 ]
+then
+	echo "failed with exception2"
+	exit 1
+else 	
+	echo "success: Expecting 2; Got $EXIT2"
+fi
+
+#exception3
+res3=$(run + 1)
+EXIT3=$?
+
+if [ $EXIT3 -ne 3 ]
+then
+	echo "failed with exception3"
+	exit 1
+else 	
+	echo "success: Expecting 3; Got $EXIT3"
+fi
+
+#exception4
+res4=$(run sqrt 213ada)
+EXIT4=$?
+
+if [ $EXIT4 -ne 4 ]
+then
+	echo "failed with exception4"
+	exit 1
+else 	
+	echo "success: Expecting 4; Got $EXIT4"
+fi
+
+#exception5
+res5=$(run sqrt -2)
+EXIT5=$?
+
+if [ $EXIT5 -ne 5 ]
+then
+	echo "failed with exception5"
+	exit 1
+else 	
+	echo "success: Expecting 5; Got $EXIT5"
+fi
+
+#exception6
+res6=$(run anagram "ada" "AAA")
+EXIT6=$?
+
+if [ $EXIT6 -ne 6 ]
+then 
+	echo "failed with exception6"
+	exit 1
+else 	
+	echo "success: Expecting 6; Got $EXIT6"
+fi
+
+#exception7
+res7=$(run gcd -1 -3)
+EXIT7=$?
+
+if [ $EXIT7 -ne 7 ]
+then	
+	echo "failed with exception7"
+	exit 1
+else 	
+	echo "success: Expecting 7; Got $EXIT7"
+fi
+
+
+# run the addition function
+add_test() {
+	local res=$(run + "$1" "$2")
+	local ans="$3"
+	local EXIT=$?
+
+	if [ "$res" != "$ans" ] || [ $EXIT -ne 0 ]
+	then
+		echo "failed with: $1, $2, $3, $?"
+		exit 1
+	fi
+
+	echo "success Expected: $ans; Got: $res"
+}
+	
+
+gcd_test() {
+	
+	local res=$(run gcd "$1" "$2")
+	local ans="$3"
+	local EXIT=$?
+
+	if [ "$res" != "$ans" ] || [ $EXIT -ne 0 ]
+	then
+		echo "failed with: $1, $2, $3, $?"
+		exit 1
+	fi
+
+	echo "success Expected: $ans; Got: $res"
+}
+sqrt_test() {
+
+	local res=$(run sqrt "$1" )
+	local ans="$2"
+	local EXIT=$?
+
+	if [ "$res" != "$ans" ] || [ $EXIT -ne 0 ]
+	then
+		echo "failed with: $1, $2, $?"
+		exit 1
+	fi
+
+	echo "success Expected: $ans; Got: $res"
+}
+
+anagram_test() {
+
+
+	local res=$(run anagram "$1" "$2")
+	local ans="$3"
+	local EXIT=$?
+
+	if [ "$res" != "$ans" ] || [ $EXIT -ne 0 ]
+	then
+		echo "failed with: $1, $2, $3, $?"
+		exit 1
+	fi
+	echo "success Expected: $ans; Got: $res"
+}
+
+
+
+
+
+# actual test
+
+add_test 1 2 3
+add_test 2222 3333 5555
+
+gcd_test 123 1123 1
+gcd_test 222 222 222
+
+sqrt_test 16.0 4.000000
+
+anagram_test aaaa aaaa true
+anagram_test adasdasd asdaaaaaa false
+anagram_test sssb bsss true
+
+
+
+
+
+
+
+
+
+
+
